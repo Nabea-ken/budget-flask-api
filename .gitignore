@@ -1,0 +1,7 @@
+# Virtual Environment
+budget/
+.budget/
+
+# Python cache
+__pycache__/
+*.pyc
