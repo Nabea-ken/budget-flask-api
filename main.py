@@ -9,14 +9,26 @@ from flask_jwt_extended import (
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from database import db, User, Budget
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 CORS(app)
+load_dotenv()
+
+database_url = os.getenv("DATABASE_URL")
+jwt_secret_key = os.getenv("JWT_SECRET_KEY")
+
+if not database_url:
+    raise RuntimeError("DATABASE_URL is required in environment variables.")
+
+if not jwt_secret_key:
+    raise RuntimeError("JWT_SECRET_KEY is required in environment variables.")
 
 # PostgreSQL config
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5433/budget_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JWT_SECRET_KEY"] = "super-secret-key-change-this"
+app.config["JWT_SECRET_KEY"] = jwt_secret_key
 
 db.init_app(app)
 jwt = JWTManager(app)
